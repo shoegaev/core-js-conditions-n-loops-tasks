@@ -315,8 +315,27 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  let i = 1;
+  while (i < arr.length) {
+    let y = 0;
+    let sumBefore = 0;
+    let sumAfter = 0;
+    while (y < i) {
+      sumBefore += arr[y];
+      y += 1;
+    }
+    y = 1;
+    while (y + i < arr.length) {
+      sumAfter += arr[y + i];
+      y += 1;
+    }
+    if (sumAfter === sumBefore) {
+      return i;
+    }
+    i += 1;
+  }
+  return -1;
 }
 
 /**
@@ -339,9 +358,69 @@ function getBalanceIndex(/* arr */) {
  *          [11, 16, 15, 6],
  *          [10, 9,  8,  7]
  *        ]
+ *
+ *          [1,  2,  3,  4],
+ *  4  =>   [12, 13, 14, 5],
+ *          [11, 16, 15, 6],
+ *          [10, 9,  8,  7]
+ *        ]
+
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  let i = 0;
+  const result = [];
+
+  while (i < size) {
+    result[i] = [];
+    let y = 0;
+    while (y < size) {
+      result[i][y] = 0;
+      y += 1;
+    }
+    i += 1;
+  }
+
+  i = 0;
+  let count = 1;
+  let horizontalMovement = true;
+  let verticalMovement = false;
+  let reverse = false;
+  let deepFactor = 0;
+  let switchQuantity = 0;
+  let angleNumber = 1;
+  while (count <= size ** 2) {
+    if (horizontalMovement) {
+      if (reverse) {
+        result[size - 1 - deepFactor][size - 1 - deepFactor - i] = count;
+      } else {
+        result[0 + deepFactor][deepFactor + i] = count;
+      }
+    } else if (verticalMovement) {
+      if (reverse) {
+        result[size - 1 - deepFactor - i][deepFactor] = count;
+      } else {
+        result[0 + deepFactor + i][size - 1 - deepFactor] = count;
+      }
+    }
+    if (i === size - 2 - deepFactor * 2) {
+      horizontalMovement = !horizontalMovement;
+      verticalMovement = !verticalMovement;
+      i = 0;
+      angleNumber += 1;
+      switchQuantity += 1;
+      if (!(angleNumber % 2 === 0)) {
+        reverse = !reverse;
+      }
+      if (switchQuantity % 4 === 0) {
+        deepFactor += 1;
+      }
+    } else {
+      i += 1;
+    }
+
+    count += 1;
+  }
+  return result;
 }
 
 /**
@@ -359,8 +438,68 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const result = [];
+  let i = 0;
+  while (i < matrix.length) {
+    result[i] = [];
+    let y = 0;
+    while (y < matrix.length) {
+      result[i][y] = '-';
+      y += 1;
+    }
+    i += 1;
+  }
+
+  let deepFactor = 0;
+  let operationCode = 1;
+  i = 0;
+  while (deepFactor < Math.floor(matrix.length / 2)) {
+    if (operationCode === 1) {
+      result[i + deepFactor][result.length - 1 - deepFactor] =
+        matrix[deepFactor][i + deepFactor];
+    } else if (operationCode === 2) {
+      result[result.length - 1 - deepFactor][
+        result.length - 1 - deepFactor - i
+      ] = matrix[i + deepFactor][matrix.length - 1 - deepFactor];
+    } else if (operationCode === 3) {
+      result[result.length - 1 - deepFactor - i][deepFactor] =
+        matrix[matrix.length - 1 - deepFactor][
+          matrix.length - 1 - deepFactor - i
+        ];
+    } else if (operationCode === 4) {
+      result[deepFactor][i + deepFactor] =
+        matrix[matrix.length - 1 - deepFactor - i][deepFactor];
+    }
+
+    i += 1;
+    if (i === matrix.length - deepFactor) {
+      operationCode += 1;
+      i = 1;
+      if (operationCode === 5) {
+        i = 0;
+        deepFactor += 1;
+        operationCode = 1;
+      }
+    }
+  }
+  if (matrix.length % 2 !== 0) {
+    result[Math.ceil(result.length / 2) - 1][Math.ceil(result.length / 2) - 1] =
+      matrix[Math.ceil(matrix.length / 2) - 1][
+        Math.ceil(matrix.length / 2) - 1
+      ];
+  }
+  i = 0;
+  const result2 = matrix;
+  while (i < result2.length) {
+    let y = 0;
+    while (y < result2.length) {
+      result2[i][y] = result[i][y];
+      y += 1;
+    }
+    i += 1;
+  }
+  return matrix;
 }
 
 /**
@@ -377,10 +516,44 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const arr1 = arr;
+  let isSorted = false;
+  let i = 0;
+  let factor = 1;
+  while (!isSorted) {
+    let elementPlusIndexDelta = Math.round(arr1.length / 1.247 ** factor);
+    if (elementPlusIndexDelta < 1) {
+      elementPlusIndexDelta = 1;
+    }
+    while (i + elementPlusIndexDelta < arr1.length) {
+      if (arr1[i] > arr1[i + elementPlusIndexDelta]) {
+        const element = arr1[i];
+        arr1[i] = arr1[i + elementPlusIndexDelta];
+        arr1[i + elementPlusIndexDelta] = element;
+      }
+      i += 1;
+    }
+    i = 0;
+    while (i < arr1.length - 1) {
+      let y = 0;
+      isSorted = true;
+      while (i + y + 1 < arr1.length) {
+        if (arr1[i] > arr1[i + 1 + y]) {
+          isSorted = false;
+          break;
+        }
+        y += 1;
+      }
+      if (!isSorted) {
+        break;
+      }
+      i += 1;
+    }
+    factor += 1;
+  }
+  return arr1;
 }
-
 /**
  * Shuffles characters in a string so that the characters with an odd index are moved to the end of the string at each iteration.
  * Take into account that the string can be very long and the number of iterations is large. Consider how you can optimize your solution.
