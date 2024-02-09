@@ -517,42 +517,53 @@ function rotateMatrix(matrix) {
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
 function sortByAsc(arr) {
-  const arr1 = arr;
-  let isSorted = false;
-  let i = 0;
-  let factor = 1;
-  while (!isSorted) {
-    let elementPlusIndexDelta = Math.round(arr1.length / 1.247 ** factor);
-    if (elementPlusIndexDelta < 1) {
-      elementPlusIndexDelta = 1;
-    }
-    while (i + elementPlusIndexDelta < arr1.length) {
-      if (arr1[i] > arr1[i + elementPlusIndexDelta]) {
-        const element = arr1[i];
-        arr1[i] = arr1[i + elementPlusIndexDelta];
-        arr1[i + elementPlusIndexDelta] = element;
-      }
-      i += 1;
-    }
-    i = 0;
-    while (i < arr1.length - 1) {
-      let y = 0;
-      isSorted = true;
-      while (i + y + 1 < arr1.length) {
-        if (arr1[i] > arr1[i + 1 + y]) {
-          isSorted = false;
-          break;
-        }
-        y += 1;
-      }
-      if (!isSorted) {
-        break;
-      }
-      i += 1;
-    }
-    factor += 1;
+  if (arr.length === 1) {
+    return arr;
   }
-  return arr1;
+  if (arr.length === 2) {
+    const first = arr[0];
+    const second = arr[1];
+    if (first < second) {
+      return [first, second];
+    }
+    return [second, first];
+  }
+  const pivotIndex = Math.round((arr.length - 1) / 2);
+  let i = 0;
+  const leftArr = [];
+  const rightArr = [];
+  let left = 0;
+  let rigth = 0;
+  while (i < arr.length) {
+    if (arr[i] < arr[pivotIndex]) {
+      leftArr[left] = arr[i];
+      left += 1;
+    } else {
+      rightArr[rigth] = arr[i];
+      rigth += 1;
+    }
+    i += 1;
+    if (i === pivotIndex) {
+      i += 1;
+    }
+  }
+  let result;
+
+  if (leftArr[0] === undefined) {
+    result = [arr[pivotIndex], ...sortByAsc(rightArr)];
+  } else if (rightArr[0] === undefined) {
+    result = [...sortByAsc(leftArr), arr[pivotIndex]];
+  } else {
+    result = [...sortByAsc(leftArr), arr[pivotIndex], ...sortByAsc(rightArr)];
+  }
+  const arrNew = arr;
+  i = 0;
+  while (i < arrNew.length) {
+    arrNew[i] = result[i];
+    i += 1;
+  }
+
+  return result;
 }
 /**
  * Shuffles characters in a string so that the characters with an odd index are moved to the end of the string at each iteration.
@@ -573,6 +584,26 @@ function sortByAsc(arr) {
  */
 function shuffleChar(/* str, iterations */) {
   throw new Error('Not implemented');
+
+  // let i = 0;
+  // let result = str;
+  // while (i < iterations) {
+  //   let evenSymbols = '';
+  //   let y = result.length - 1;
+  //   let oddSymbols = '';
+  //   while (y >= 0) {
+  //     const isOdd = y % 2 !== 0;
+  //     if (isOdd) {
+  //       oddSymbols = result[y] + oddSymbols;
+  //     } else {
+  //       evenSymbols = result[y] + evenSymbols;
+  //     }
+  //     y -= 1;
+  //   }
+  //   result = evenSymbols + oddSymbols;
+  //   i += 1;
+  // }
+  // return result;
 }
 
 /**
