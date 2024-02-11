@@ -582,28 +582,31 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let i = 0;
+  let result = str;
+  while (i < iterations) {
+    let evenSymbols = '';
+    let y = result.length - 1;
+    let oddSymbols = '';
+    while (y >= 0) {
+      const isOdd = y % 2 !== 0;
+      if (isOdd) {
+        oddSymbols = result[y] + oddSymbols;
+      } else {
+        evenSymbols = result[y] + evenSymbols;
+      }
+      y -= 1;
+    }
+    result = evenSymbols + oddSymbols;
+    if (result === str) {
+      i = iterations - (iterations % (i + 1));
+    } else {
+      i += 1;
+    }
+  }
 
-  // let i = 0;
-  // let result = str;
-  // while (i < iterations) {
-  //   let evenSymbols = '';
-  //   let y = result.length - 1;
-  //   let oddSymbols = '';
-  //   while (y >= 0) {
-  //     const isOdd = y % 2 !== 0;
-  //     if (isOdd) {
-  //       oddSymbols = result[y] + oddSymbols;
-  //     } else {
-  //       evenSymbols = result[y] + evenSymbols;
-  //     }
-  //     y -= 1;
-  //   }
-  //   result = evenSymbols + oddSymbols;
-  //   i += 1;
-  // }
-  // return result;
+  return result;
 }
 
 /**
@@ -623,8 +626,52 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  let i = -1;
+  const arr = Array.from(Array(String(number).length), () => {
+    i += 1;
+    return Number(String(number)[i]);
+  });
+
+  i = arr.length - 1;
+  let before;
+  let after;
+  let itExist = false;
+  while (i - 1 >= 0) {
+    if (arr[i] > arr[i - 1]) {
+      let y = -1;
+      const leftArrPart = Array.from(Array(i), () => {
+        y += 1;
+        return arr[y];
+      });
+      const rightArrPart = Array.from(Array(arr.length - i), () => {
+        y += 1;
+        return arr[y];
+      });
+      rightArrPart.sort((a, b) => a - b);
+      y = 0;
+      while (y < rightArrPart.length) {
+        if (rightArrPart[y] > arr[i - 1]) {
+          leftArrPart[leftArrPart.length - 1] = rightArrPart[y];
+          before = leftArrPart;
+          rightArrPart[y] = arr[i - 1];
+          after = rightArrPart;
+          break;
+        }
+        y += 1;
+      }
+      itExist = true;
+      break;
+    }
+    i -= 1;
+  }
+
+  if (!itExist) {
+    return number;
+  }
+  after.sort((a, b) => a - b);
+
+  return Number(`${before.join('')}${after.join('')}`);
 }
 
 module.exports = {
